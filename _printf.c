@@ -28,7 +28,6 @@ int (**get_supported_formats(void))(va_list)
 	/* table['x'] = print_hexadecimal_lowercase;   */
 	/* table['X'] = print_hexadecimal_uppercase;   */
 
-
 	return (table);
 }
 
@@ -52,14 +51,25 @@ int (**get_supported_formats(void))(va_list)
 int _printf(const char *format, ...)
 {
 	int (**supported_formats)(va_list);
-	int total;         /* Total number of characters outputted */
+	char conversion_delimiter = '%';
+
+	va_list components; /* Variadic list of "string components" */
+	int total;          /* Total number of characters outputted */
 
 	supported_formats = get_supported_formats();
+
+	if (format == NULL) /* Guard clause */
+		return (-1);      /* Seems fair to return negative for error. */
+
+	va_start(components, format);
 
 	/* @remove random printf to avoid "unused variable" compil error. */
 	printf("%s\n", format);
 	/* Thanks ChatGPT for this tip. Avoids "unused variable" error. */
 	(void)supported_formats;
+	(void)conversion_delimiter;
+
+	va_end(components);
 
 	total = 0;
 	return (total);
