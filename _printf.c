@@ -92,9 +92,17 @@ int _printf(const char *format, ...)
 				print_single_char('%');
 				i += 2;
 			}
-			else
+			else if (supported_formats[(int)format[i + 1]])
 			{
 				/* Implement a function to look for format */
+				supported_formats[(int)format[i + 1]](components);
+				i += 2;
+			}
+			else
+			{
+				print_single_char(format[i]);
+				print_single_char(format[i + 1]);
+				i += 2;
 			}
 		}
 		else
