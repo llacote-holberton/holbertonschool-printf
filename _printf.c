@@ -82,7 +82,20 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == conversion_delimiter)
 		{
-			break;
+			if (format[i + 1] == '\0')
+			{
+				print_single_char('%');
+				i++;
+			}
+			else if (format[i + 1] == '%')
+			{
+				print_single_char('%');
+				i += 2;
+			}
+			else
+			{
+				/* Implement a function to look for format */
+			}
 		}
 		else
 		{
