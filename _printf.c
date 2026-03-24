@@ -3,6 +3,35 @@
 #include <stdarg.h>
 
 #include <stdio.h> /* Temporary */
+
+/* "Local helpers for _printf */
+
+/**
+ * get_supported_formats - Initializes a correspondance table
+ *   for _printf to know which characters matches supported formats.
+ * Return: a pointer to the first element of a table of function pointers.
+ *
+ * NOTE: wouldn't have managed to "extract" the table from _printf body
+ *   to use a helper function without help from IA. Double pointers are hard.
+ */
+int (**get_supported_formats(void))(va_list)
+{
+	static int (*table[128])(va_list); /* all entries automatically NULL */
+	/* Affecting only the "character index" which we want to support.    */
+	/*  Value should always be the name of a function declared in main.h */
+	/* table['c'] = print_character; */
+	/* table['s'] = print_string;    */
+	/* table['d'] = print_decimal;   */
+	/* table['i'] = print_decimal;   */ /* @note behaves like 'd' in printf. */
+	/* table['o'] = print_octal;     */
+	/* table['u'] = print_unsigned;   */
+	/* table['x'] = print_hexadecimal_lowercase;   */
+	/* table['X'] = print_hexadecimal_uppercase;   */
+
+
+	return (table);
+}
+
 /**
  * _printf - Prints formatted strings to standard output.
  * @format: string mixing literal characters, format introducer (%)
@@ -14,20 +43,25 @@
  *   equal to the number of "conversion commands".
  *
  * Return: integer representing total number of characters outputted.
- * 
- * Description: outputs a string composed of literal characters 
+ *
+ * Description: outputs a string composed of literal characters
  *   and formatable named components on the file descriptor 1
  *   which is usually an end-user's interface (ex terminal screen).
  *
  */
 int _printf(const char *format, ...)
 {
-  int total;  /* Total number of characters outputted */
+	int (**supported_formats)(va_list);
+	int total;         /* Total number of characters outputted */
 
-  /* @remove random printf to avoid "unused variable" compil error. */
-  printf("%s\n", format);
+	supported_formats = get_supported_formats();
 
-  total = 0;
-  return (total);
+	/* @remove random printf to avoid "unused variable" compil error. */
+	printf("%s\n", format);
+	/* Thanks ChatGPT for this tip. Avoids "unused variable" error. */
+	(void)supported_formats;
+
+	total = 0;
+	return (total);
 }
 
