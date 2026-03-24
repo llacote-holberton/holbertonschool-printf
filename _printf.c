@@ -1,6 +1,7 @@
 /* Orchestrator function for formatted printing */
 #include "main.h"
-#include <stdarg.h>
+#include <stdarg.h> /* Required for variadic parsing.    */
+#include <unistd.h> /* Required for write standard func. */
 
 #include <stdio.h> /* Temporary */
 
@@ -32,6 +33,20 @@ int (**get_supported_formats(void))(va_list)
 }
 
 /**
+ * print_single_char - Helper function to print
+ *   just a single character without call to variadic.
+ * @c: character to print.
+ * Return: 1 if success (to increment total count of chars printed).
+ */
+int print_single_char(char c)
+{
+	if (c == '\0')
+		return (-1);
+	else
+		return (write(1, &c, 1));
+}
+
+/**
  * _printf - Prints formatted strings to standard output.
  * @format: string mixing literal characters, format introducer (%)
  *     and format identifiers ('c', 'i', 's', 'f').
@@ -55,6 +70,7 @@ int _printf(const char *format, ...)
 
 	va_list components; /* Variadic list of "string components" */
 	int total;          /* Total number of characters outputted */
+	unsigned int i = 0; /* Cursor used to traverse "format"     */
 
 	supported_formats = get_supported_formats();
 
@@ -62,12 +78,25 @@ int _printf(const char *format, ...)
 		return (-1);      /* Seems fair to return negative for error. */
 
 	va_start(components, format);
+	while (format[i])
+	{
+		if (format[i] == conversion_delimiter)
+		{
+			break;
+		}
+		else
+		{
+			print_single_char(format[i]);
+			i++;
+		}
+	}
 
 	/* @remove random printf to avoid "unused variable" compil error. */
-	printf("%s\n", format);
+	/* printf("%s\n", format); */
 	/* Thanks ChatGPT for this tip. Avoids "unused variable" error. */
 	(void)supported_formats;
 	(void)conversion_delimiter;
+	(void)format;
 
 	va_end(components);
 
