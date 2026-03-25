@@ -80,36 +80,23 @@ int _printf(const char *format, ...)
 	va_start(components, format);
 	while (format[i])
 	{
-		if (format[i] == conversion_delimiter)
+		if (format[i] == conversion_delimiter && format[i + 1] != '\0')
 		{
-			if (format[i + 1] == '\0')
-			{
-				print_single_char('%');
-				i++;
-			}
-			else if (format[i + 1] == '%')
-			{
-				print_single_char('%');
-				i += 2;
-			}
+			if (format[i + 1] == '%')
+				print_single_char(format[i++]);
 			else if (supported_formats[(int)format[i + 1]])
 			{
-				/* Implement a function to look for format */
 				supported_formats[(int)format[i + 1]](components);
-				i += 2;
+				i += 1;
 			}
 			else
-			{
 				print_single_char(format[i]);
-				print_single_char(format[i + 1]);
-				i += 2;
-			}
 		}
 		else
 		{
 			print_single_char(format[i]);
-			i++;
 		}
+		i++;
 	}
 
 	/* @remove random printf to avoid "unused variable" compil error. */
