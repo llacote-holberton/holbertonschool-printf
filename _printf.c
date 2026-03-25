@@ -20,7 +20,7 @@ int (**get_supported_formats(void))(va_list)
 	static int (*table[128])(va_list); /* all entries automatically NULL */
 	/* Affecting only the "character index" which we want to support.    */
 	/*  Value should always be the name of a function declared in main.h */
-	/* table['c'] = print_character; */
+	table['c'] = print_character;
 	/* table['s'] = print_string;    */
 	/* table['d'] = print_decimal;   */
 	/* table['i'] = print_decimal;   */ /* @note behaves like 'd' in printf. */
