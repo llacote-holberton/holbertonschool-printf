@@ -99,13 +99,6 @@ int _printf(const char *format, ...)
 		i++;
 	}
 
-	/* @remove random printf to avoid "unused variable" compil error. */
-	/* printf("%s\n", format); */
-	/* Thanks ChatGPT for this tip. Avoids "unused variable" error. */
-	(void)supported_formats;
-	(void)conversion_delimiter;
-	(void)format;
-
 	va_end(components);
 
 	return (total);
