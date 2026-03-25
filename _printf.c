@@ -67,16 +67,14 @@ int _printf(const char *format, ...)
 {
 	int (**supported_formats)(va_list);
 	char conversion_delimiter = '%';
-
 	va_list components; /* Variadic list of "string components" */
 	int total = 0;      /* Total number of characters outputted */
 	unsigned int i = 0; /* Cursor used to traverse "format"     */
 
-	supported_formats = get_supported_formats();
-
 	if (format == NULL) /* Guard clause */
 		return (-1);      /* Seems fair to return negative for error. */
 
+	supported_formats = get_supported_formats();
 	va_start(components, format);
 	while (format[i])
 	{
