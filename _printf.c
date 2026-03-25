@@ -69,7 +69,7 @@ int _printf(const char *format, ...)
 	char conversion_delimiter = '%';
 
 	va_list components; /* Variadic list of "string components" */
-	int total;          /* Total number of characters outputted */
+	int total = 0;      /* Total number of characters outputted */
 	unsigned int i = 0; /* Cursor used to traverse "format"     */
 
 	supported_formats = get_supported_formats();
@@ -83,18 +83,18 @@ int _printf(const char *format, ...)
 		if (format[i] == conversion_delimiter && format[i + 1] != '\0')
 		{
 			if (format[i + 1] == '%')
-				print_single_char(format[i++]);
+				total += print_single_char(format[i++]);
 			else if (supported_formats[(int)format[i + 1]])
 			{
-				supported_formats[(int)format[i + 1]](components);
+				total += supported_formats[(int)format[i + 1]](components);
 				i += 1;
 			}
 			else
-				print_single_char(format[i]);
+				total += print_single_char(format[i]);
 		}
 		else
 		{
-			print_single_char(format[i]);
+			total += print_single_char(format[i]);
 		}
 		i++;
 	}
@@ -108,7 +108,6 @@ int _printf(const char *format, ...)
 
 	va_end(components);
 
-	total = 0;
 	return (total);
 }
 
