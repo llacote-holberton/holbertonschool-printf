@@ -83,20 +83,22 @@ int _printf(const char *format, ...)
 		if (format[i] == conversion_delimiter && format[i + 1] != '\0')
 		{
 			if (format[i + 1] == '%')
-				total += print_single_char(format[i++]);
+				total += print_single_char('%');
 			else if (supported_formats[(int)format[i + 1]])
-			{
 				total += supported_formats[(int)format[i + 1]](components);
-				i += 1;
-			}
 			else
+			{
 				total += print_single_char(format[i]);
+				total += print_single_char(format[i + 1]);
+			}
+			i += 2;
+			continue;
 		}
 		else
 		{
 			total += print_single_char(format[i]);
+			i++;
 		}
-		i++;
 	}
 
 	va_end(components);
