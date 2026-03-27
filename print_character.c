@@ -19,8 +19,5 @@ int print_character(va_list components)
 	char c;
 
 	c = (char)va_arg(components, int);
-	if (c == '\0')
-		return (0);
-	else
-		return (write(1, &c, 1));
+	return (write(1, &c, 1));
 }
