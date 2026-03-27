@@ -7,7 +7,7 @@
 /* On screen printer of formatted strings (limited format support) */
 int _printf(const char *format, ...);
 
-/* "Unit functions" indirected through _printf to output specific data types. */
+/* "Unit functions" indirected through _printf to output specific data types.*/
 /* Except the last two each will be in its own .c file. */
 int print_character(va_list);
 int print_string(va_list);
