@@ -1,6 +1,6 @@
 /* Orchestrator function for formatted printing */
 #include "main.h"
-#include <stdarg.h> /* Required for variadic parsing.     */
+#include <stdarg.h> /* Required for variadic parsing.	 */
 #include <unistd.h> /* Required for write standard func. */
 
 /* "Local helpers for _printf */
@@ -15,20 +15,20 @@
  */
 int (**get_supported_formats(void))(va_list)
 {
-    static int (*table[128])(va_list); /* all entries automatically NULL */
-    /* Affecting only the "character index" which we want to support.     */
-    /* Value should always be the name of a function declared in main.h */
+	static int (*table[128])(va_list); /* all entries automatically NULL */
+	/* Affecting only the "character index" which we want to support.	 */
+	/* Value should always be the name of a function declared in main.h */
 
-    table['c'] = print_character;
-    table['s'] = print_string;
-    table['d'] = print_decimal;
-    table['i'] = print_decimal;
-    /* table['o'] = print_octal;     */
-    /* table['u'] = print_unsigned;   */
-    /* table['x'] = print_hexadecimal_lowercase;   */
-    /* table['X'] = print_hexadecimal_uppercase;   */
+	table['c'] = print_character;
+	table['s'] = print_string;
+	table['d'] = print_decimal;
+	table['i'] = print_decimal;
+	/* table['o'] = print_octal;	 */
+	/* table['u'] = print_unsigned;   */
+	/* table['x'] = print_hexadecimal_lowercase;   */
+	/* table['X'] = print_hexadecimal_uppercase;   */
 
-    return (table);
+	return (table);
 }
 
 /**
@@ -39,8 +39,8 @@ int (**get_supported_formats(void))(va_list)
  */
 int print_single_char(char c)
 {
-    /* MODIF: Retourne directement le résultat de write (1) pour le compteur */
-    return (write(1, &c, 1));
+	/* MODIF: Retourne directement le résultat de write (1) pour le compteur */
+	return (write(1, &c, 1));
 }
 
 /**
@@ -62,57 +62,57 @@ int print_single_char(char c)
  */
 int _printf(const char *format, ...)
 {
-    int (**supported_formats)(va_list);
-    char conversion_delimiter = '%';
-    va_list components; /* Variadic list of "string components" */
-    int total = 0;      /* MODIF: Initialisé à 0 dès le début */
-    unsigned int i = 0; /* Cursor used to traverse "format"     */
+	int (**supported_formats)(va_list);
+	char conversion_delimiter = '%';
+	va_list components; /* Variadic list of "string components" */
+	int total = 0;	  /* MODIF: Initialisé à 0 dès le début */
+	unsigned int i = 0; /* Cursor used to traverse "format"	 */
 
-    if (format == NULL) /* Guard clause */
-        return (-1);      /* Seems fair to return negative for error. */
+	if (format == NULL) /* Guard clause */
+	return (-1);	  /* Seems fair to return negative for error. */
 
-    supported_formats = get_supported_formats();
-    va_start(components, format);
+	supported_formats = get_supported_formats();
+	va_start(components, format);
 
-    while (format[i])
-    {
-        if (format[i] == conversion_delimiter)
-        {
-            /* MODIF: Gestion du % seul en fin de chaîne (sécurité) */
-            if (format[i + 1] == '\0')
-            {
-                va_end(components);
-                return (-1);
-            }
+	while (format[i])
+	{
+	if (format[i] == conversion_delimiter)
+	{
+		/* MODIF: Gestion du % seul en fin de chaîne (sécurité) */
+		if (format[i + 1] == '\0')
+		{
+		va_end(components);
+		return (-1);
+		}
 
-            if (format[i + 1] == '%')
-            {
-                /* MODIF: Ajout du retour au total */
-                total += print_single_char('%');
-                i += 2;
-            }
-            else if (supported_formats[(int)format[i + 1]])
-            {
-                /* MODIF: Capture du retour de la fonction de rappel */
-                total += supported_formats[(int)format[i + 1]](components);
-                i += 2;
-            }
-            else
-            {
-                /* MODIF: Affichage tel quel et incrémentation correcte */
-                total += print_single_char(format[i]);
-                total += print_single_char(format[i + 1]);
-                i += 2;
-            }
-        }
-        else
-        {
-            /* MODIF: Ajout du retour au total */
-            total += print_single_char(format[i]);
-            i++;
-        }
-    }
+		if (format[i + 1] == '%')
+		{
+		/* MODIF: Ajout du retour au total */
+		total += print_single_char('%');
+		i += 2;
+		}
+		else if (supported_formats[(int)format[i + 1]])
+		{
+		/* MODIF: Capture du retour de la fonction de rappel */
+		total += supported_formats[(int)format[i + 1]](components);
+		i += 2;
+		}
+		else
+		{
+		/* MODIF: Affichage tel quel et incrémentation correcte */
+		total += print_single_char(format[i]);
+		total += print_single_char(format[i + 1]);
+		i += 2;
+		}
+	}
+	else
+	{
+		/* MODIF: Ajout du retour au total */
+		total += print_single_char(format[i]);
+		i++;
+	}
+	}
 
-    va_end(components);
-    return (total);
+	va_end(components);
+	return (total);
 }
