@@ -40,10 +40,7 @@ int (**get_supported_formats(void))(va_list)
  */
 int print_single_char(char c)
 {
-	if (c == '\0')
-		return (-1);
-	else
-		return (write(1, &c, 1));
+	return (write(1, &c, 1));
 }
 
 /**
