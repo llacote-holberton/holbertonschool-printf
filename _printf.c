@@ -36,11 +36,48 @@ int (**get_supported_formats(void))(va_list)
  * print_single_char - Helper function to print
  *   just a single character without call to variadic.
  * @c: character to print.
- * Return: 1 if success (to increment total count of chars printed).
+ * @total: pointer to the total to increment.
+ * Return: >=0 if success (total is incremented "inplace")
+ *   or -1 if failure (bubbling up write error code).
  */
-int print_single_char(char c)
+int print_single_char(char c, int *total)
 {
-	return (write(1, &c, 1));
+	int write_successful = 0;
+
+	write_successful = write(1, &c, 1);
+	if (write_successful >= 0)
+		*total += write_successful;
+
+	return (write_successful);
+}
+
+/**
+ * delegate_print - Helper function which encapsulates prints to manage error.
+ * @printer: pointer to a dedicated printing function.
+ * @components: variadic list to propagate to dedicated printer.
+ * @total: pointer to an integer used to count overall amount of printed chars.
+ *
+ * Return: 0 on success, -1 if error ("bubbling up" return from write.)
+ *
+ * NOTES:
+ * 1/ Had to use a subfunction to make the indirection because taking care
+ *    of the "case failure in writing" in _printf
+ *    would have made n° of lines explode.
+ * 2/ Had to affect total directly "by passing pointer" because
+ *    just bubbling up would have ended up with the same problem.
+ */
+int delegate_print(int (*printer)(va_list), va_list components, int *total)
+{
+	int count;
+
+	count = printer(components);
+	if (count == -1)
+		return (-1);
+	else
+	{
+		*total += count;
+		return (0);
+	}
 }
 
 /**
@@ -67,10 +104,11 @@ int _printf(const char *format, ...)
 	va_list components; /* Variadic list of "string components" */
 	int total = 0;      /* Total number of characters outputted */
 	unsigned int i = 0; /* Cursor used to traverse "format"     */
+	int (*subprinter)(va_list); /* Required for printing through delegation.*/
+	int subprinter_return = 0; /* Used to bubble up potential error return. */
 
 	if (format == NULL) /* Guard clause */
 		return (-1);      /* Seems fair to return negative for error. */
-
 	supported_formats = get_supported_formats();
 	va_start(components, format);
 	while (format[i])
@@ -78,26 +116,29 @@ int _printf(const char *format, ...)
 		if (format[i] == conversion_delimiter && format[i + 1] != '\0')
 		{
 			if (format[i + 1] == '%')
-				total += print_single_char('%');
+				subprinter_return = print_single_char('%', &total);
 			else if (supported_formats[(int)format[i + 1]])
-				total += supported_formats[(int)format[i + 1]](components);
+			{
+				subprinter = supported_formats[(int)format[i + 1]];
+				subprinter_return = delegate_print(subprinter, components, &total);
+			}
 			else
 			{
-				total += print_single_char(format[i]);
-				total += print_single_char(format[i + 1]);
+				subprinter_return = print_single_char(format[i], &total);
+				subprinter_return = print_single_char(format[i + 1], &total);
 			}
 			i += 2;
 			continue;
 		}
 		else
 		{
-			total += print_single_char(format[i]);
+			subprinter_return = print_single_char(format[i], &total);
 			i++;
 		}
+		if (subprinter_return < 0)
+			return (-1);
 	}
-
 	va_end(components);
-
 	return (total);
 }
 
