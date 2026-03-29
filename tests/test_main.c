@@ -11,6 +11,9 @@
 int main(void)
 {
 	int len, len2;
+	int big_decimal;
+	char convert_buff[65];
+	char *big_converted;
 
 	printf("--- TEST 01: Strings ---\n");
 	len = _printf("Underscore: %s\n", "Hello World");
@@ -73,6 +76,21 @@ int main(void)
 	printf("StdLibrary: ");
 	len2 = printf("é");
 	printf("\n");
+	printf("Lengths: [%d, %d]\n", len, len2);
+
+	/* TESTS UTILS */
+	printf("--- TEST UTILS ---\n");
+	big_decimal = -224466777;
+	printf("*** Convert to lowercase hexa ***\n");
+	big_converted = convert_decimal_up_to_base_16(big_decimal, 16, convert_buff, (size_t)65);
+	len = _printf("Underscore: %s\n", big_converted);
+	len2 = printf("StdLibrary: %s\n", big_converted);
+	printf("Lengths: [%d, %d]\n", len, len2);
+
+	printf("*** Convert to octal ***\n");
+	big_converted = convert_decimal_up_to_base_16(big_decimal, 8, convert_buff, (size_t)65);
+	len = _printf("Underscore: %s\n", big_converted);
+	len2 = printf("StdLibrary: %s\n", big_converted);
 	printf("Lengths: [%d, %d]\n", len, len2);
 
 	return (0);
