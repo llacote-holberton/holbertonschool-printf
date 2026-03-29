@@ -8,14 +8,14 @@
 /* "Local helpers for _printf */
 
 /**
- * get_supported_formats - Initializes a correspondance table
+ * get_subprinters - Initializes a correspondance table
  *   for _printf to know which characters matches supported formats.
  * Return: a pointer to the first element of a table of function pointers.
  *
  * NOTE: wouldn't have managed to "extract" the table from _printf body
  *   to use a helper function without help from IA. Double pointers are hard.
  */
-int (**get_supported_formats(void))(va_list)
+int (**get_subprinters(void))(va_list)
 {
 	static int (*table[128])(va_list); /* all entries automatically NULL */
 	/* Affecting only the "character index" which we want to support.    */
@@ -52,12 +52,12 @@ int print_single_char(char c, int *total)
 }
 
 /**
- * delegate_print - Helper function which encapsulates prints to manage error.
+ * delegate_to - Helper function which encapsulates prints to manage error.
  * @printer: pointer to a dedicated printing function.
  * @components: variadic list to propagate to dedicated printer.
  * @total: pointer to an integer used to count overall amount of printed chars.
  *
- * Return: 0 on success, -1 if error ("bubbling up" return from write.)
+ * Return: >=0 on success, -1 if error ("bubbling up" return from write.)
  *
  * NOTES:
  * 1/ Had to use a subfunction to make the indirection because taking care
@@ -66,18 +66,15 @@ int print_single_char(char c, int *total)
  * 2/ Had to affect total directly "by passing pointer" because
  *    just bubbling up would have ended up with the same problem.
  */
-int delegate_print(int (*printer)(va_list), va_list components, int *total)
+int delegate_to(int (*printer)(va_list), va_list components, int *total)
 {
 	int count;
 
 	count = printer(components);
-	if (count == -1)
-		return (-1);
-	else
-	{
+	if (count >= 0)
 		*total += count;
-		return (0);
-	}
+
+	return (count);
 }
 
 /**
@@ -99,43 +96,41 @@ int delegate_print(int (*printer)(va_list), va_list components, int *total)
  */
 int _printf(const char *format, ...)
 {
-	int (**supported_formats)(va_list);
+	int (**subprinters)(va_list);
 	char conversion_delimiter = '%';
 	va_list components; /* Variadic list of "string components" */
 	int total = 0;      /* Total number of characters outputted */
 	unsigned int i = 0; /* Cursor used to traverse "format"     */
-	int (*subprinter)(va_list); /* Required for printing through delegation.*/
-	int subprinter_return = 0; /* Used to bubble up potential error return. */
+	int spr = 0; /* Subprinter_return: used to bubble up (error) return. */
 
 	if (format == NULL) /* Guard clause */
 		return (-1);      /* Seems fair to return negative for error. */
-	supported_formats = get_supported_formats();
+	subprinters = get_subprinters();
 	va_start(components, format);
 	while (format[i])
 	{
 		if (format[i] == conversion_delimiter && format[i + 1] != '\0')
 		{
 			if (format[i + 1] == '%')
-				subprinter_return = print_single_char('%', &total);
-			else if (supported_formats[(int)format[i + 1]])
+				spr = print_single_char('%', &total);
+			else if (subprinters[(int)format[i + 1]])
 			{
-				subprinter = supported_formats[(int)format[i + 1]];
-				subprinter_return = delegate_print(subprinter, components, &total);
+				spr = delegate_to(subprinters[(int)format[i + 1]], components, &total);
 			}
 			else
 			{
-				subprinter_return = print_single_char(format[i], &total);
-				subprinter_return = print_single_char(format[i + 1], &total);
+				spr = print_single_char(format[i], &total);
+				spr = print_single_char(format[i + 1], &total);
 			}
 			i += 2;
 			continue;
 		}
 		else
 		{
-			subprinter_return = print_single_char(format[i], &total);
+			spr = print_single_char(format[i], &total);
 			i++;
 		}
-		if (subprinter_return < 0)
+		if (spr < 0)
 			return (-1);
 	}
 	va_end(components);
