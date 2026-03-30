@@ -77,6 +77,11 @@ int main(void)
 	printf("\n");
 	printf("Lengths: [%d, %d]\n", len, len2);
 
+	printf("--- TEST 08: Octal ---\n");
+	len = _printf("Underscore: %o, %o\n", INT_MIN, INT_MAX);
+	len2 = printf("StdLibrary: %o, %o\n", INT_MIN, INT_MAX);
+	printf("Lengths: [%d, %d]\n\n", len, len2);
+
 	/* TESTS UTILS */
 	printf("--- TEST UTILS ---\n");
 	big_decimal = -224466777;
