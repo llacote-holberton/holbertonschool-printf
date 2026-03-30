@@ -18,7 +18,45 @@
  *        once "set at the right address" cannot work if the buffer lifetime
  *        is tied to a specific instance of the function (stack frame).
  */
-char *convert_decimal_up_to_base_16(int n, unsigned int base,
+char *convert_unsigned_decimal_up_to_base_16(unsigned int n, unsigned int base,
+																		char *buffer, size_t buffer_size)
+{
+	char *digit_writer;
+	char *digits;
+
+	if (!n || base < 2 || base > 16 || buffer_size > CONVERT_MAX_BUFFER)
+		return ("");
+	/* Digits covering up to base16 (hexadecimal) */
+	digits = "0123456789abcdef";
+	digit_writer = buffer + buffer_size;
+	*digit_writer = '\0';
+
+	do {
+		*(--digit_writer) = digits[n % base];
+		n = n / base;
+	} while (n);
+
+	return (digit_writer);
+}
+
+/**
+ * convert_signed_decimal_up_to_base_16 - converts a decimal into a string
+ *   representing the n in base n
+ * @n: the integer to convert (initially "number" but needed space).
+ * @base: the target base to convert it into.
+ * @buffer: char array which will store "digits" of conversion.
+ * @buffer_size: required for control AND to know provided array's end
+ *   so we can "jump to it" with our pointer.
+ *
+ * Return: string representing new character.
+ *
+ * NOTE: buffer MUST be passed as "provided by caller" because...
+ *   a) Static may lead to undesired behaviour (like simultaneous calls).
+ *   b) The smart approach of using a pointer on the buffer and returning it
+ *        once "set at the right address" cannot work if the buffer lifetime
+ *        is tied to a specific instance of the function (stack frame).
+ */
+char *convert_signed_decimal_up_to_base_16(int n, unsigned int base,
 																		char *buffer, size_t buffer_size)
 {
 	char *digit_writer;
@@ -27,9 +65,7 @@ char *convert_decimal_up_to_base_16(int n, unsigned int base,
 
 	if (!n || base < 2 || base > 16 || buffer_size > CONVERT_MAX_BUFFER)
 		return (""); /* How to properly inform "out of bounds request" ? */
-	/* if (base == 10 || n == 0 || n == 1 || (unsigned int)n == base)
-		return ((char *)n); */ /* @warning Stupid! 100% undefined behaviour. */
-	/* Digits covering up to base16 (hexadecimal) */
+		/* Digits covering up to base16 (hexadecimal) */
 	digits = "0123456789abcdef";
 	/* Pointer used to write digits in buffer. */
 	/* Since we get digits "from the least relevant first" the best is to */

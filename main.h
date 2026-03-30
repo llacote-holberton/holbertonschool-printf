@@ -21,7 +21,8 @@ int print_hexadecimal(va_list);
 /* Base 10 to base 2 <= x <= 16 number conversion helper. */
 /* @warning DO NOT USE '=' AND DO NOT end with ; */
 #define CONVERT_MAX_BUFFER 65
-char *convert_decimal_up_to_base_16(int number, unsigned int base,
+char *convert_signed_decimal_up_to_base_16(int number, unsigned int base,
 																		char *buffer, size_t buffer_size);
-
+char *convert_unsigned_decimal_up_to_base_16(unsigned int number, 
+								unsigned int base, char *buffer, size_t buffer_size);
 #endif

@@ -56,7 +56,6 @@ int main(void)
 	len2 = printf("%c", '\0');
 	printf("\n");
 	printf("Lengths: [%d, %d]\n", len, len2);
-	
 
 	printf("--- TEST 07a: Single plain ASCII character ('z') ---\n");
 	printf("Underscore: ");
@@ -82,13 +81,13 @@ int main(void)
 	printf("--- TEST UTILS ---\n");
 	big_decimal = -224466777;
 	printf("*** Convert to lowercase hexa ***\n");
-	big_converted = convert_decimal_up_to_base_16(big_decimal, 16, convert_buff, (size_t)65);
+	big_converted = convert_signed_decimal_up_to_base_16(big_decimal, 16, convert_buff, (size_t)65);
 	len = _printf("Underscore: %s\n", big_converted);
 	len2 = printf("StdLibrary: %s\n", big_converted);
 	printf("Lengths: [%d, %d]\n", len, len2);
 
 	printf("*** Convert to octal ***\n");
-	big_converted = convert_decimal_up_to_base_16(big_decimal, 8, convert_buff, (size_t)65);
+	big_converted = convert_signed_decimal_up_to_base_16(big_decimal, 8, convert_buff, (size_t)65);
 	len = _printf("Underscore: %s\n", big_converted);
 	len2 = printf("StdLibrary: %s\n", big_converted);
 	printf("Lengths: [%d, %d]\n", len, len2);
