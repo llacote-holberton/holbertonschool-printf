@@ -15,7 +15,8 @@ int print_string(va_list);
 int print_decimal(va_list);
 int print_unsigned(va_list);
 int print_octal(va_list);
-int print_hexadecimal(va_list);
+int print_hexadecimal_lowercase(va_list);
+int print_hexadecimal_uppercase(va_list);
 
 /* Helper functions and related constants */
 /* Base 10 to base 2 <= x <= 16 number conversion helper. */
@@ -23,6 +24,6 @@ int print_hexadecimal(va_list);
 #define CONVERT_MAX_BUFFER 65
 char *convert_signed_decimal_up_to_base_16(int number, unsigned int base,
 																		char *buffer, size_t buffer_size);
-char *convert_unsigned_decimal_up_to_base_16(unsigned int number, 
+char *convert_unsigned_decimal_up_to_base_16(unsigned int number,
 								unsigned int base, char *buffer, size_t buffer_size);
 #endif
