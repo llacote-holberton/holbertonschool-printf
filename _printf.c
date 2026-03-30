@@ -26,8 +26,8 @@ int (**get_subprinters(void))(va_list)
 	table['i'] = print_decimal;
 	table['o'] = print_octal;
 	/* table['u'] = print_unsigned;   */
-	/* table['x'] = print_hexadecimal_lowercase;   */
-	/* table['X'] = print_hexadecimal_uppercase;   */
+	table['x'] = print_hexadecimal_lowercase;
+	table['X'] = print_hexadecimal_uppercase;
 
 	return (table);
 }
