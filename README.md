@@ -23,7 +23,7 @@ This program has been developed by...
 
 It is distributed under terms of the GPL v3.0, confer [LICENSE](LICENSE.md) file for details.
 
-## How to run
+## How to install and run
 ### Prerequisites
 You must have the packages/tools related to C
   installed on your system, as well as a "compiler"
@@ -122,7 +122,7 @@ If at any moment writing fails for any reason, function immediately stops parsin
 
 ### Accessible help
 You can consult the associated help by typing the following command while at the root directory of this project.
-`man 3 _printf`.
+`man ./ _printf.3`.
 
 In case you would prefer adding it to your manpages database, you can type in these commands
   (you will need root privileges on your system if you plan on adding for all users by copying to /usr/share/man/man3/).
@@ -139,6 +139,7 @@ man 3 _printf                            # Will now work wherever you are.
 2. **When format contains valid conversion commands, arguments which follow MUST match the conversion specifiers in both order and expected type.**
    Program cannot guarantee behaviour if this requirement is not fulfilled.
 3. This program only supports the aforementioned features. If you need more formatters or advanced formatting options such as padding, limiting number of decimals etc please consider using the official printf from C standard library instead.
+4. There is a special case for which _printf reproduces standard printf behaviour: when detecting '%%', only one will be printed out.
 
 
 ### Examples of use
@@ -167,9 +168,62 @@ Examples of faulty call ending in undefined behaviour.
 ## Technical information
 
 ### General architecture
-FIXME describing what each file contains.
-FIXME put the flowchart diagram.
+
+This C program has been written with the help of GCC for compiling,
+Valgrind for memory testing and Git for collaboration.
+
+It revolves about the continuous parsing of the first provided argument ("format" string), either...
+* Printing characters literally (by default).
+* Or using delegated "printer functions" (called "subprinters") to replace parts of the string when reaching a valid conversion command.
+
+It ends either when a failure has happened during one write operation (then returns -1 to indicate error happened)  
+or when format string has been fully parsed (then returns total characters printed on output), whichever comes first.
+
+#### Process flow
+![_printf Flowchart](./flowchart_printf.png)
+
+#### Source code file structure
+| Filename                     | Role                                                                                                 | Functions in file               |
+|------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------|
+| main.h              | Custom header holding all "public-facing" functions, structures and constants.       | All prototypes except get_subprinters & delegate_to      |
+| _printf.c           | Orchestrator: defines printers and manages main parsing loop delegating as needed.   | _printf, get_subprinters, delegate_to, print_single_char |
+| print_character.c   | Uses variadic argument to print single character                                     | print_character                                          |
+| print_string.c      | Uses variadic argument to print string                                               | print_string                                             |
+| print_decimal.c     | Uses variadic argument to print (signed) integer as is (covers both '%d' and '%i')   | print_decimal                                            |
+| print_hexadecimal.c | Prints variadic unsigned integer in an hexadecimal (low|upp)ercase representation    | print_hexadecimal_uppercase, print_hexadecimal_lowercase, hex_helper |
+| print_octal.c       | Prints variadic unsigned integer in an octal representation                          | print_octal                                              |
+| utils.c             | Holds utility functions                                                              | convert_unsigned_decimal_up_to_base_16, convert_signed_decimal_up_to_base_16 |
+
+NOTE: we decided to try and follow a "one function per file" approach but in practice it made sense to have exceptions when...
+- Some functions were very close to one another in behaviour (ex hexadecimal in lowercase and uppercase).
+- Some functions had no value outside of one single call made to them in another function (typically get_subprinters, recursive_int).
 
 ### Testing
-FIXME add listing of tests made with Valgrind
-  and architecture on memory allocation and average use.
+Each formatter has been tested with its own "test case" in our "test main" file.
+Program only uses stack memory overall, with an expected peak consumption at any time of about 250 bytes in the context of the provided test_main.c demonstration code.
+
+Absence of memory leak has been checked through the use of the Valgrind debugging tool, with the following command
+`valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose          --log-file=valgrind-out.txt <path_to_executable>`.
+Note that in case tracability is wanted you can ask Valgrind to write down to a file with option `--log-file=<filename>`.
+Result shows clean execution.
+```
+==10== 
+==10== HEAP SUMMARY:
+==10==     in use at exit: 0 bytes in 0 blocks
+==10==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==10== 
+==10== All heap blocks were freed -- no leaks are possible
+==10== 
+==10== For lists of detected and suppressed errors, rerun with: -s
+==10== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+```
+
+#### Technologies
+<p align="left">
+    <img src="https://img.shields.io/badge/C-a8b9cc?logo=&logoColor=black&style=for-the-badge" alt="C badge">
+    <img src="https://img.shields.io/badge/GIT-f05032?logo=git&logoColor=white&style=for-the-badge" alt="Git badge">
+    <img src="https://img.shields.io/badge/GITHUB-181717?logo=github&logoColor=white&style=for-the-badge" alt="GitHub badge">
+    <img src="https://img.shields.io/badge/VALGRIND-purple?logo=v&logoColor=white&style=for-the-badge" alt="Valgrind badge">
+    <img src="https://img.shields.io/badge/VIM-019733?logo=vim&logoColor=white&style=for-the-badge" alt="VIM badge">
+    <img src="https://img.shields.io/badge/KDE-blue?logo=kde&logoColor=white&style=for-the-badge" alt="KDE badge">
+</p>
