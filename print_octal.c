@@ -23,8 +23,8 @@ int print_octal(va_list components)
 	int written;      /* Counts printed and can hold potential error. */
 
 	source = va_arg(components, unsigned int);
-	converted = convert_unsigned_decimal_up_to_base_16(source,
-											8, buffer, CONVERT_MAX_BUFFER);
+	converted = change_integer_base(source,
+											"01234567", buffer, CONVERT_MAX_BUFFER);
 
 	/* Was gonna do a whole "step by step calculate length", useless! */
 	/* while (converted) */

@@ -83,6 +83,8 @@ int main(void)
 	char *big_converted;
 	unsigned int ui = 4294967295;
 	char *str_null = NULL;
+	char *base08_set = "01234567";
+	char *base16_set = "0123456789abcdefg";
 
 	printf("==== START AUTOMATED TESTS ON FORMATTERS ====\n");
 	TEST_1_ARGS("Strings",  "%s",       "Hello World");
@@ -100,11 +102,11 @@ int main(void)
 	printf("==== END AUTOMATED TESTS ON FORMATTERS ====\n");
 	printf("\n==== START AUTOMATED TESTS ON UTILS FUNCS ====\n");
 	big_decimal = -224466777;
-	big_converted = convert_signed_decimal_up_to_base_16(
-					big_decimal, 16, convert_buff, (size_t)65);
+	big_converted = change_integer_base(
+					big_decimal, base16_set, convert_buff, (size_t)65);
 	TEST_1_ARGS("Big_N printed as hexa'",  "%s", big_converted);
-	big_converted = convert_signed_decimal_up_to_base_16(
-					big_decimal, 8, convert_buff, (size_t)65);
+	big_converted = change_integer_base(
+					big_decimal, base08_set, convert_buff, (size_t)65);
 	TEST_1_ARGS("Big_N printed as octal'",  "%s", big_converted);
 
 	return (0);
