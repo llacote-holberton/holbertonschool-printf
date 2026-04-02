@@ -96,6 +96,7 @@ int main(void)
 	TEST_0_ARGS("Lone EOL 'as literal'",  "\0");
 	TEST_0_ARGS("Single plain ASCII character ('z') as literal", "z");
 	TEST_0_ARGS("Single plain UTF8 character ('é') as literal", "é");
+	TEST_2_ARGS("Unsigned",  "%u, %u", INT_MIN, INT_MAX);
 	TEST_2_ARGS("Octal",  "%o, %o", INT_MIN, INT_MAX);
 	TEST_3_ARGS("Hexadecimal - lower",  "%x, %x, %x", 0, 42, ui);
 	TEST_3_ARGS("Hexadecimal - UPPER",  "%x, %x, %x", 0, 42, ui);
