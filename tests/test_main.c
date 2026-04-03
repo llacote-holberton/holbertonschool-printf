@@ -84,7 +84,7 @@ int main(void)
 	unsigned int ui = 4294967295;
 	char *str_null = NULL;
 	char *base08_set = "01234567";
-	char *base16_set = "0123456789abcdefg";
+	char *base16_set = "0123456789abcdef";
 
 	printf("==== START AUTOMATED TESTS ON FORMATTERS ====\n");
 	TEST_1_ARGS("Strings",  "%s",       "Hello World");
@@ -99,7 +99,7 @@ int main(void)
 	TEST_2_ARGS("Unsigned",  "%u, %u", INT_MIN, INT_MAX);
 	TEST_2_ARGS("Octal",  "%o, %o", INT_MIN, INT_MAX);
 	TEST_3_ARGS("Hexadecimal - lower",  "%x, %x, %x", 0, 42, ui);
-	TEST_3_ARGS("Hexadecimal - UPPER",  "%x, %x, %x", 0, 42, ui);
+	TEST_3_ARGS("Hexadecimal - UPPER",  "%X, %X, %X", 0, 42, ui);
 	printf("==== END AUTOMATED TESTS ON FORMATTERS ====\n");
 	printf("\n==== START AUTOMATED TESTS ON UTILS FUNCS ====\n");
 	big_decimal = -224466777;
