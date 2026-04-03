@@ -1,7 +1,28 @@
 # Printf partial rewrite: _printf
 
 ## Table of content
-FIXME
+- [Overview](#overview)
+  - [Summary](#summary)
+  - [Copyright](#copyright)
+- [How to install and run](#how-to-install-and-run)
+  - [Prerequisites](#prerequisites)
+  - [1. Downloading](#1-downloading)
+  - [2. Compiling](#2-compiling)
+  - [3. Starting program](#3-starting-program)
+- [How to use](#how-to-use)
+  - [Usage overview](#usage-overview)
+  - [Features](#features)
+  - [Accessible help](#accessible-help)
+  - [Important rules and limitations](#important-rules-and-limitations)
+  - [Examples of use](#examples-of-use)
+    - [Valid examples](#valid-examples)
+    - [Failing examples](#failing-examples)
+- [Technical information](#technical-information)
+  - [General architecture](#general-architecture)
+    - [Process flow](#process-flow)
+    - [Source code file structure](#source-code-file-structure)
+  - [Testing](#testing)
+    - [Technologies](#technologies)
 
 ## Overview
 
@@ -44,7 +65,7 @@ Otherwise you can simply download a zip containing all projects file
   then unfolding it where you want on your computer.
 
 ### 2. Compiling
-Open the terminal, go inside the project directory then inside its "FIXME GIVE PROPER NAME" subfolder.
+Open the terminal, go inside the project directory (the one created from git clone or unzip).
 Then type the following command (without quotes if you're reading this as raw text).
 `gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o custom_partial_printf_demo.out`  
 
@@ -192,7 +213,8 @@ or when format string has been fully parsed (then returns total characters print
 | print_decimal.c     | Uses variadic argument to print (signed) integer as is (covers both '%d' and '%i')   | print_decimal                                            |
 | print_hexadecimal.c | Prints variadic unsigned integer in an hexadecimal (low|upp)ercase representation    | print_hexadecimal_uppercase, print_hexadecimal_lowercase, hex_helper |
 | print_octal.c       | Prints variadic unsigned integer in an octal representation                          | print_octal                                              |
-| utils.c             | Holds utility functions                                                              | convert_unsigned_decimal_up_to_base_16, convert_signed_decimal_up_to_base_16 |
+| print_unsigned.c    | Prints variadic unsigned integer in a decimal representation                         | print_unsigned                                           |
+| utils.c             | Holds utility functions                                                              | change_integer_base                                      |
 
 NOTE: we decided to try and follow a "one function per file" approach but in practice it made sense to have exceptions when...
 - Some functions were very close to one another in behaviour (ex hexadecimal in lowercase and uppercase).
