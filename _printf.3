@@ -8,10 +8,15 @@ _printf \- formatted output conversion
 .SH DESCRIPTION
 The \fB_printf\fP() function produces output according to a \fIformat\fP as described below. It writes output to stdout, the standard output stream.
 .PP
-The format string is composed of zero or more directives: ordinary characters (not %), which are copied unchanged to the output stream; and conversion specifications, each of which results in fetching zero or more subsequent arguments.
+The format string is composed of zero or more directives: ordinary characters (not %), which are copied unchanged to the output stream; and conversion specifications, each of which results in fetching zero or more subsequent arguments. 
+.br
+Please note that any character following % which does not match a supported conversion specifier will be printed as is.
 .SH RETURN VALUE
 Upon success, \fB_printf\fP() returns the number of characters printed (excluding the null byte used to end output to strings). If an output error is encountered, a value of -1 is returned.
 .SH CONVERSION SPECIFIERS
+TP
+.B %%
+A '%' is written. No argument is converted.
 .TP
 .B %c
 The \fBint\fP argument is converted to an \fBunsigned char\fP, and the resulting character is written.
@@ -19,17 +24,37 @@ The \fBint\fP argument is converted to an \fBunsigned char\fP, and the resulting
 .B %s
 The \fBconst char *\fP argument is expected to be a pointer to an array of character type (pointer to a string). Characters from the array are written up to (but not including) the terminating null byte.
 .TP
-.B %%
-A '%' is written. No argument is converted.
-.TP
 .B %d, %i
 The \fBint\fP argument is converted to signed decimal notation.
+.TP
+.B %u
+The \fBunsigned int\fP argument is printed as is in decimal notation.
+TP
+.B %o
+The \fBunsigned int\fP argument is printed with on the fly conversion for octal representation.
+TP
+.B %x
+The \fBunsigned int\fP argument is printed with on the fly conversion for lowercase hexadecimal representation.
+TP
+.B %X
+The \fBunsigned int\fP argument is printed with on the fly conversion for UPPERcase hexadecimal representation.
 .SH EXAMPLES
 .B _printf("Character: [%c]\\n", 'H');
 .br
 .B _printf("String: [%s]\\n", "I am a string!");
 .br
+.B _printf("Integer: [%i]\\n", 136427834);
+.br
 .B _printf("Negative: [%d]\\n", -762534);
+.br
+.B _printf("Unsigned (777777): [%o]\\n", 777777);
+.br
+.B _printf("Octal (777 -> 1411): [%o]\\n", 777);
+.br
+.B _printf("Lowercase Hexa (7777 -> 1e61): [%x]\\n", 7777);
+.br
+.B _printf("Uppercase Hexa (7777 -> 1E61): [%X]\\n", 7777);
+.br
 .SH SEE ALSO
 printf(3), write(2)
 .SH AUTHORS
