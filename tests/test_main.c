@@ -3,6 +3,73 @@
 #include "main.h"
 
 
+/* Helper required because a static directly in macro */
+/*   would actually be "reinitialized" since each     */
+/*   macro creates a new "copy". */
+/**
+ * tests_counter - Autoincrements each time a macro is called.
+ *
+ * Return: up to date counter.
+ */
+static int tests_counter(void)
+{
+	static int n;  /* ONE shared counter, automatically set to 0. */
+
+	return (++n);
+}
+
+/* Couldn't have found this myself honestly.   */
+/* This is a "macro", a cool way to have smart */
+/* "automatic copy/paste" of instructions with */
+/*  option to provide dynamic context to it.   */
+#define TEST_0_ARGS(label, fmt)                      \
+do {                                                   \
+	printf("\n=== TEST %02d: %s ===\n",               \
+	tests_counter(), label);                  \
+	printf("Underscore: ");                         \
+	fflush(stdout);                                 \
+	len = _printf(fmt);                         \
+	printf("\nStdLibrary: ");                       \
+	len2 = printf(fmt);                          \
+	printf("\nLengths: [%d, %d]\n", len, len2);     \
+} while (0)
+
+#define TEST_1_ARGS(label, fmt, arg)                       \
+do {                                                   \
+	printf("\n=== TEST %02d: %s ===\n",               \
+	tests_counter(), label);                  \
+	printf("Underscore: ");                         \
+	fflush(stdout);                                 \
+	len = _printf(fmt, arg);                    \
+	printf("\nStdLibrary: ");                       \
+	len2 = printf(fmt, arg);                     \
+	printf("\nLengths: [%d, %d]\n", len, len2);     \
+} while (0)
+
+#define TEST_2_ARGS(label, fmt, arg1, arg2)           \
+do {                                                   \
+	printf("\n=== TEST %02d: %s ===\n",               \
+	tests_counter(), label);                  \
+	printf("Underscore: ");                         \
+	fflush(stdout);                                 \
+	len = _printf(fmt, arg1, arg2);                    \
+	printf("\nStdLibrary: ");                       \
+	len2 = printf(fmt, arg1, arg2);                     \
+	printf("\nLengths: [%d, %d]\n", len, len2);     \
+} while (0)
+
+#define TEST_3_ARGS(label, fmt, arg1, arg2, arg3)           \
+do {                                                   \
+	printf("\n=== TEST %02d: %s ===\n",               \
+	tests_counter(), label);                  \
+	printf("Underscore: ");                         \
+	fflush(stdout);                                 \
+	len = _printf(fmt, arg1, arg2, arg3);                    \
+	printf("\nStdLibrary: ");                       \
+	len2 = printf(fmt, arg1, arg2, arg3);                     \
+	printf("\nLengths: [%d, %d]\n", len, len2);     \
+} while (0)
+
 /**
  * main - Test suite for _printf
  *
@@ -16,98 +83,54 @@ int main(void)
 	char *big_converted;
 	unsigned int ui = 4294967295;
 	char *str_null = NULL;
+	char *base08_set = "01234567";
+	char *base16_set = "0123456789abcdef";
 
-	printf("--- TEST 01: Strings ---\n");
-	len = _printf("Underscore: %s\n", "Hello World");
-	len2 = printf("StdLibrary: %s\n", "Hello World");
-	printf("Lengths: [%d, %d]\n\n", len, len2);
-
-	printf("--- TEST 2: NULL String ---\n");
-	len = _printf("Underscore: %s\n", str_null);
-	len2 = printf("StdLibrary: %s\n", str_null);
-	printf("Lengths: [%d, %d]\n\n", len, len2);
-
-	printf("--- TEST 03: Integers ---\n");
-	len = _printf("Underscore: %d, %i\n", -1024, 2024);
-	len2 = printf("StdLibrary: %d, %i\n", -1024, 2024);
-	printf("Lengths: [%d, %d]\n\n", len, len2);
-
-	printf("--- TEST 04: INT_MIN & INT_MAX ---\n");
-	len = _printf("Underscore: %d, %d\n", INT_MIN, INT_MAX);
-	len2 = printf("StdLibrary: %d, %d\n", INT_MIN, INT_MAX);
-	printf("Lengths: [%d, %d]\n\n", len, len2);
-
-	printf("--- TEST 05: Percent ---\n");
-	len = _printf("Underscore: %%\n");
-	len2 = printf("StdLibrary: %%\n");
-	printf("Lengths: [%d, %d]\n", len, len2);
-
-	printf("--- TEST 06: Lone EOL character ---\n");
-	printf("Underscore with char formatter: ");
-	len = _printf("%c", '\0');
-	printf("\n");
-	printf("StdLibrary with char formatter: ");
-	len2 = printf("%c", '\0');
-	printf("\n");
-	printf("Lengths: [%d, %d]\n", len, len2);
-
-	printf("Underscore as literal: ");
-	len = _printf("%c", '\0');
-	printf("\n");
-	printf("StdLibrary as literal: ");
-	len2 = printf("%c", '\0');
-	printf("\n");
-	printf("Lengths: [%d, %d]\n", len, len2);
-
-	printf("--- TEST 07a: Single plain ASCII character ('z') ---\n");
-	printf("Underscore: ");
-	fflush(stdout); /* Forces to empty the stdout buffer. */
-	len = _printf("z");
-	printf("\n");
-	printf("StdLibrary: ");
-	len2 = printf("z");
-	printf("\n");
-	printf("Lengths: [%d, %d]\n", len, len2);
-
-	printf("--- TEST 07b: Single plain UTF8 character ('é') ---\n");
-	printf("Underscore: ");
-	fflush(stdout); /* Required because no \n on previous printf call */
-	len = _printf("é");
-	printf("\n");
-	printf("StdLibrary: ");
-	len2 = printf("é");
-	printf("\n");
-	printf("Lengths: [%d, %d]\n", len, len2);
-
-	printf("--- TEST 08: Octal ---\n");
-	len = _printf("Underscore: %o, %o\n", INT_MIN, INT_MAX);
-	len2 = printf("StdLibrary: %o, %o\n", INT_MIN, INT_MAX);
-	printf("Lengths: [%d, %d]\n\n", len, len2);
-
-	/* TESTS UTILS */
-	printf("--- TEST UTILS ---\n");
+	printf("==== START AUTOMATED TESTS ON FORMATTERS ====\n");
+	TEST_1_ARGS("Strings",  "%s",       "Hello World");
+	TEST_1_ARGS("NULL String",  "%s",       str_null);
+	TEST_2_ARGS("Integers", "%d, %i",        -1024, 2024);
+	TEST_2_ARGS("INT_MIN & INT_MAX", "%d, %d", INT_MIN, INT_MAX);
+	TEST_1_ARGS("Double percent",  "%%",       "Hello World");
+	TEST_1_ARGS("Lone EOL 'as character'",  "%c", '\0');
+	TEST_0_ARGS("Lone EOL 'as literal'",  "\0");
+	TEST_0_ARGS("Single plain ASCII character ('z') as literal", "z");
+	TEST_0_ARGS("Single plain UTF8 character ('é') as literal", "é");
+	TEST_2_ARGS("Unsigned",  "%u, %u", INT_MIN, INT_MAX);
+	TEST_2_ARGS("Octal",  "%o, %o", INT_MIN, INT_MAX);
+	TEST_3_ARGS("Hexadecimal - lower",  "%x, %x, %x", 0, 42, ui);
+	TEST_3_ARGS("Hexadecimal - UPPER",  "%X, %X, %X", 0, 42, ui);
+	printf("==== END AUTOMATED TESTS ON FORMATTERS ====\n");
+	printf("\n==== START AUTOMATED TESTS ON UTILS FUNCS ====\n");
 	big_decimal = -224466777;
-	printf("*** Convert to lowercase hexa ***\n");
-	big_converted = convert_signed_decimal_up_to_base_16(big_decimal, 16, convert_buff, (size_t)65);
-	len = _printf("Underscore: %s\n", big_converted);
-	len2 = printf("StdLibrary: %s\n", big_converted);
-	printf("Lengths: [%d, %d]\n", len, len2);
-
-	printf("*** Convert to octal ***\n");
-	big_converted = convert_signed_decimal_up_to_base_16(big_decimal, 8, convert_buff, (size_t)65);
-	len = _printf("Underscore: %s\n", big_converted);
-	len2 = printf("StdLibrary: %s\n", big_converted);
-	printf("Lengths: [%d, %d]\n", len, len2);
-
-		printf("--- TEST 9: Hexadecimal Lower (%%x) ---\n");
-	len = _printf("Underscore: %x, %x, %x\n", 0, 42, ui);
-	len2 = printf("StdLibrary: %x, %x, %x\n", 0, 42, ui);
-	printf("Lengths: [%d, %d]\n\n", len, len2);
-
-	printf("--- TEST 10: Hexadecimal Upper (%%X) ---\n");
-	len = _printf("Underscore: %X, %X, %X\n", 0, 42, ui);
-	len2 = printf("StdLibrary: %X, %X, %X\n", 0, 42, ui);
-	printf("Lengths: [%d, %d]\n\n", len, len2);
+	big_converted = change_integer_base(
+					big_decimal, base16_set, convert_buff, (size_t)65);
+	TEST_1_ARGS("Big_N printed as hexa'",  "%s", big_converted);
+	big_converted = change_integer_base(
+					big_decimal, base08_set, convert_buff, (size_t)65);
+	TEST_1_ARGS("Big_N printed as octal'",  "%s", big_converted);
 
 	return (0);
 }
+
+/***
+ *
+ * ATTEMPT TO MAKE A HELPER FUNCTION FOR TESTS
+ *   but only "moves" the problem of being constrained
+ *   by variadic arguments.
+ *
+ *int test_wrapper(char t_name, void *t_data, char t_type)
+ * {
+ * static t_number;
+ * int len;
+ * int len2;
+ * static initialized = 0;
+ *
+ * if (! initialized)
+ *   test_number = 0;
+ * printf("\n\n=== Test %d: %s ===\n", t_number, t_name);
+ * len = _printf("Underscore: %s\n", "Hello World");
+ * len2 = printf("StdLibrary: %s\n", "Hello World");
+ * printf("Lengths: [%d, %d]\n\n", len, len2);
+  }
+ */

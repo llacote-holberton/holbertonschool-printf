@@ -3,7 +3,7 @@
 #include "main.h"
 
 /**
- * print_octal - Prints next variadic argument "as an octal number".
+ * print_unsigned - Prints next variadic argument as unsigned.
  * @components: variadic list holding component to read.
  * Return: number of characters printed or -1 on error.
  *
@@ -14,7 +14,7 @@
  * 2. We arbitrarily consider that the provided number will be
  *     of "unsigned integer" type.
  */
-int print_octal(va_list components)
+int print_unsigned(va_list components)
 {
 	unsigned int source; /* Arbitrary choice to restrict to unsigned. */
 	char buffer[CONVERT_MAX_BUFFER]; /* To store conversion digits.  */
@@ -24,7 +24,7 @@ int print_octal(va_list components)
 
 	source = va_arg(components, unsigned int);
 	converted = change_integer_base(source,
-											"01234567", buffer, CONVERT_MAX_BUFFER);
+											"0123456789", buffer, CONVERT_MAX_BUFFER);
 
 	/* Was gonna do a whole "step by step calculate length", useless! */
 	/* while (converted) */
