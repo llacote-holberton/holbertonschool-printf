@@ -59,7 +59,7 @@ In case that helps here are online resources to install
 ### 1. Downloading
 If you have git and are comfortable with command line,
   you can simply open one and go to the directory in which you want calculator to be.
-  Then run (without the quotes) "git clone https://github.com/llacote-holberton/holbertonschool-printf.git"
+  Then run (without the quotes) `"git clone https://github.com/llacote-holberton/holbertonschool-printf.git"`
 Otherwise you can simply download a zip containing all projects file
   by following [this url](https://github.com/llacote-holberton/holbertonschool-printf/archive/refs/heads/main.zip)
   then unfolding it where you want on your computer.
@@ -75,7 +75,10 @@ So you will need to write your own source code implementing the "main" function 
 
 With that said, if you just want a demonstration of its output, we provide a dedicated "test main" you can use at leisure.
 Just add it to the list of files to include in compilation like so.
-`gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c tests/test_main.c -o custom_partial_printf_demo.out`
+`gcc -Wall -Werror -Wextra -pedantic -std=gnu89 -Wno-format *.c tests/test_main.c -o custom_partial_printf_demo.out`
+
+Please be aware that for our demo example the -Wno-format flag is REQUIRED to pass compilation, as we make "side-by-side" comparisons
+  between "custom printf" and "official printf" rendering including in cases which are normally unsupported by printf (thus rejected by compiler).
 
 ### 3. Starting program
 Open a terminal place yourself in the directory in which you have downloaded/extracted the project then compiled an executable,  
@@ -202,6 +205,12 @@ or when format string has been fully parsed (then returns total characters print
 
 #### Process flow
 ![_printf Flowchart](./flowchart_printf.png)
+
+#### Notes on architecture choices
+
+1. Contrarily to printf, we print literally a character following % but not recognized as a supported conversion identifier "as a literal character". This difference comes from the fact that printf has a much wider range of features and as such often tries to "parse several consecutive characters" to find a pattern... Ending in failure in case there is no exploitable pattern. As our function is much simpler it allows us to act differently.
+
+2. For file structure we tried to be as clear as possible but our initial stance of "one function per file" evolved a bit when actual coding start. We diverged a bit from that stance in that some functions have been written "inline aside" their associated function as it didn't make much sense to "expose" them (not really reusable ones).
 
 #### Source code file structure
 | Filename                     | Role                                                                                                 | Functions in file               |
