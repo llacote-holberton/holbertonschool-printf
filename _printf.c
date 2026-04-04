@@ -3,8 +3,6 @@
 #include <stdarg.h> /* Required for variadic parsing.    */
 #include <unistd.h> /* Required for write standard func. */
 
-#include <stdio.h> /* Temporary */
-
 /* "Local helpers for _printf */
 
 /**
