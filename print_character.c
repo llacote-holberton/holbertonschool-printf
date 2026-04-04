@@ -17,7 +17,11 @@
 int print_character(va_list components)
 {
 	char c;
+	int write_return;
 
 	c = (char)va_arg(components, int);
-	return (write(1, &c, 1));
+	/* Required step to have '\0' counted irrelevant of OS and processor. */
+	write_return = (write(1, &c, 1) < 0) ? -1 : 1;
+
+	return (write_return);
 }
