@@ -136,12 +136,16 @@ This program only supports the following conversion commands.
 | '%d'               | Replaces with an integer "as provided"                                                    | int                                                  |
 | '%i'               | Replaces with an integer "as provided"                                                    | int                                                  |
 | '%u'               | Replaces with an unsigned integer (>=0) "as provided".                                    | unsigned int                                         |
+| '%b'               | Replaces with a binary representation  of a provided unsigned integer.                    | unsigned int                                         |
 | '%o'               | Replaces with an octal representation  of a provided unsigned integer.                    | unsigned int                                         |
 | '%x'               | Replaces with a hexadecimal representation (in lowercase) of a provided unsigned integer. | unsigned int                                         |
 | '%X'               | Replaces with a hexadecimal representation (in uppercase) of a provided unsigned integer. | unsigned int                                         |
 |                    |                                                                                           |                                                      |
 
-IMPORTANT: function has a two-branche return: if the whole writing was successful, it will return the total number of characters printed.
+IMPORTANT: 
+1/ For the '%u', '%b', '%o', '%x', '%X' formatters program expects an unsigned integer. Output cannot be guaranteed if you provided another kind of data as it will be read "bit-wise".
+   Confer "invalid examples" sections for illustrations.
+2/ Function has a two-branche return: if the whole writing was successful, it will return the total number of characters printed.
 If at any moment writing fails for any reason, function immediately stops parsing format and will return -1.
 
 ### Accessible help
@@ -163,9 +167,10 @@ man 3 _printf                            # Will now work wherever you are.
 2. **When format contains valid conversion commands, arguments which follow MUST match the conversion specifiers in both order and expected type.**
    Program cannot guarantee behaviour if this requirement is not fulfilled.
 3. This program only supports the aforementioned features. If you need more formatters or advanced formatting options such as padding, limiting number of decimals etc please consider using the official printf from C standard library instead.
-4. In order to mimic official printf behaviour as close as possible... a) The non-decimal formatters will printed as unsigned irrelevant of input. b) Function will return error code (-1) if the provided "format string" ends with a '%'.
-5. There is a special case for which _printf reproduces standard printf behaviour: when detecting '%%', only one will be printed out.
-
+4. In order to mimic official printf behaviour as close as possible... 
+    1. The non-decimal formatters won't reject variables which aren't of the expected unsigned integer type but will interpret the bytes of the argument "as it represented an integer" so output won't follow expectations.
+    2. Function will return error code (-1) if the provided "format string" ends with a '%'.
+    3. There is a special case for which _printf reproduces standard printf behaviour: when detecting '%%', only one will be printed out.
 
 ### Examples of use
 
@@ -178,7 +183,7 @@ man 3 _printf                            # Will now work wherever you are.
 | %i — Signed decimal integer  | _printf("Score: %i\n", 1337);             | Score: 1337            | 12                  |
 | %u — Unsigned decimal integer| _printf("Population: %u\n", 4294967295u); | Population: 4294967295 | 23                  |
 | %b — Binary representation   | _printf("2 (b10) equals %b (b2)\n", 2);   | 2 (b10) equals 2 (b2)  | 23                  |
-| %o — Octal representation    | _printf("Permissions: %o\n", 493u);       | Permissions: 755       | 17                  |
+| %o — Octal representation    | _printf("Permissions: %o\n", 493);        | Permissions: 755       | 17                  |
 | %x — Hexadecimal lowercase   | _printf("Color: %x\n", 255u);             | Color: ff              | 10                  |
 | %X — Hexadecimal uppercase   | _printf("Color: %X\n", 255u);             | Color: FF              | 10                  |
 
@@ -190,6 +195,10 @@ Examples of faulty call ending in undefined behaviour.
   => One argument is missing.
 ```_printf("Hello %s, current credit: %u dollars.\n", 'Z', -666);```
   => Good number of arguments, good order but second argument is signed int and %u expects an unsigned one.
+```_printf("666 in octal is 1232? %o\n", -666);```
+  => Example of wrong type given for number representation: %o will be replaced by 37777776546.
+```_printf("666 in octal is 1232? %o\n", "666");```
+  => Example of wrong type given for number representation: %o will be replaced by 26561711653.
 
 ## Technical information
 
