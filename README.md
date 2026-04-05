@@ -176,6 +176,7 @@ man 3 _printf                            # Will now work wherever you are.
 | %d — Signed decimal integer  | _printf("Degrees: %d\n", -42);            | Degrees: -42           | 13                  |
 | %i — Signed decimal integer  | _printf("Score: %i\n", 1337);             | Score: 1337            | 12                  |
 | %u — Unsigned decimal integer| _printf("Population: %u\n", 4294967295u); | Population: 4294967295 | 23                  |
+| %b — Binary representation   | _printf("2 (b10) equals %b (b2)\n", 2);   | 2 (b10) equals 2 (b2)  | 23                  |
 | %o — Octal representation    | _printf("Permissions: %o\n", 493u);       | Permissions: 755       | 17                  |
 | %x — Hexadecimal lowercase   | _printf("Color: %x\n", 255u);             | Color: ff              | 10                  |
 | %X — Hexadecimal uppercase   | _printf("Color: %X\n", 255u);             | Color: FF              | 10                  |
@@ -220,9 +221,10 @@ or when format string has been fully parsed (then returns total characters print
 | print_character.c   | Uses variadic argument to print single character                                     | print_character                                          |
 | print_string.c      | Uses variadic argument to print string                                               | print_string                                             |
 | print_decimal.c     | Uses variadic argument to print (signed) integer as is (covers both '%d' and '%i')   | print_decimal                                            |
-| print_hexadecimal.c | Prints variadic unsigned integer in an hexadecimal (low|upp)ercase representation    | print_hexadecimal_uppercase, print_hexadecimal_lowercase, hex_helper |
-| print_octal.c       | Prints variadic unsigned integer in an octal representation                          | print_octal                                              |
 | print_unsigned.c    | Prints variadic unsigned integer in a decimal representation                         | print_uint  (different name because of a bug in Betty )  |
+| print_binary.c      | Prints variadic unsigned integer in a binary representation                          | print_binary                                             |
+| print_octal.c       | Prints variadic unsigned integer in an octal representation                          | print_octal                                              |
+| print_hexadecimal.c | Prints variadic unsigned integer in an hexadecimal (low|upp)ercase representation    | print_hexadecimal_uppercase, print_hexadecimal_lowercase, hex_helper |
 | utils.c             | Holds utility functions                                                              | change_integer_base                                      |
 
 NOTE: we decided to try and follow a "one function per file" approach but in practice it made sense to have exceptions when...

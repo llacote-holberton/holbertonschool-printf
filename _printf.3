@@ -14,7 +14,7 @@ Please note that any character following % which does not match a supported conv
 .SH RETURN VALUE
 Upon success, \fB_printf\fP() returns the number of characters printed (excluding the null byte used to end output to strings). If an output error is encountered, a value of -1 is returned.
 .SH CONVERSION SPECIFIERS
-TP
+.TP
 .B %%
 A '%' is written. No argument is converted.
 .TP
@@ -29,13 +29,16 @@ The \fBint\fP argument is converted to signed decimal notation.
 .TP
 .B %u
 The \fBunsigned int\fP argument is printed as is in decimal notation.
-TP
+.TP
+.B %b
+The \fBunsigned int\fP argument is printed with on the fly conversion for binary representation.
+.TP
 .B %o
 The \fBunsigned int\fP argument is printed with on the fly conversion for octal representation.
-TP
+.TP
 .B %x
 The \fBunsigned int\fP argument is printed with on the fly conversion for lowercase hexadecimal representation.
-TP
+.TP
 .B %X
 The \fBunsigned int\fP argument is printed with on the fly conversion for UPPERcase hexadecimal representation.
 .SH EXAMPLES
@@ -48,6 +51,8 @@ The \fBunsigned int\fP argument is printed with on the fly conversion for UPPERc
 .B _printf("Negative: [%d]\\n", -762534);
 .br
 .B _printf("Unsigned (777777): [%o]\\n", 777777);
+.br
+.B _printf("Binary (2) equals?... (10): [%b]\\n", 2);
 .br
 .B _printf("Octal (777 -> 1411): [%o]\\n", 777);
 .br
