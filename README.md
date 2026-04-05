@@ -163,7 +163,8 @@ man 3 _printf                            # Will now work wherever you are.
 2. **When format contains valid conversion commands, arguments which follow MUST match the conversion specifiers in both order and expected type.**
    Program cannot guarantee behaviour if this requirement is not fulfilled.
 3. This program only supports the aforementioned features. If you need more formatters or advanced formatting options such as padding, limiting number of decimals etc please consider using the official printf from C standard library instead.
-4. There is a special case for which _printf reproduces standard printf behaviour: when detecting '%%', only one will be printed out.
+4. In order to mimic official printf behaviour as close as possible... a) The non-decimal formatters will printed as unsigned irrelevant of input. b) Function will return error code (-1) if the provided "format string" ends with a '%'.
+5. There is a special case for which _printf reproduces standard printf behaviour: when detecting '%%', only one will be printed out.
 
 
 ### Examples of use
