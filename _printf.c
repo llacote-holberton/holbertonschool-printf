@@ -108,21 +108,20 @@ int _printf(const char *format, ...)
 	va_start(components, format);
 	while (format[i])
 	{
-		if (format[i] == conversion_delimiter && format[i + 1] != '\0')
+		if (format[i] == conversion_delimiter)
 		{
-			if (format[i + 1] == '%')
+			if (format[i + 1] == 0)
+				spr = -1;
+			else if (format[i + 1] == '%')
 				spr = print_single_char('%', &total);
 			else if (subprinters[(int)format[i + 1]])
-			{
 				spr = delegate_to(subprinters[(int)format[i + 1]], components, &total);
-			}
 			else
 			{
 				spr = print_single_char(format[i], &total);
 				spr = print_single_char(format[i + 1], &total);
 			}
 			i += 2;
-			continue;
 		}
 		else
 		{
