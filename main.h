@@ -13,7 +13,7 @@ int _printf(const char *format, ...);
 int print_character(va_list);
 int print_string(va_list);
 int print_decimal(va_list);
-int print_unsigned(va_list);
+int print_uint(va_list);
 int print_octal(va_list);
 int print_hexadecimal_lowercase(va_list);
 int print_hexadecimal_uppercase(va_list);

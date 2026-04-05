@@ -3,7 +3,7 @@
 #include "main.h"
 
 /**
- * print_unsigned - Prints next variadic argument as unsigned.
+ * print_uint - Prints next variadic argument as unsigned.
  * @components: variadic list holding component to read.
  * Return: number of characters printed or -1 on error.
  *
@@ -14,7 +14,7 @@
  * 2. We arbitrarily consider that the provided number will be
  *     of "unsigned integer" type.
  */
-int print_unsigned(va_list components)
+int print_uint(va_list components)
 {
 	unsigned int source; /* Arbitrary choice to restrict to unsigned. */
 	char buffer[CONVERT_MAX_BUFFER]; /* To store conversion digits.  */

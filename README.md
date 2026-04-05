@@ -222,7 +222,7 @@ or when format string has been fully parsed (then returns total characters print
 | print_decimal.c     | Uses variadic argument to print (signed) integer as is (covers both '%d' and '%i')   | print_decimal                                            |
 | print_hexadecimal.c | Prints variadic unsigned integer in an hexadecimal (low|upp)ercase representation    | print_hexadecimal_uppercase, print_hexadecimal_lowercase, hex_helper |
 | print_octal.c       | Prints variadic unsigned integer in an octal representation                          | print_octal                                              |
-| print_unsigned.c    | Prints variadic unsigned integer in a decimal representation                         | print_unsigned                                           |
+| print_unsigned.c    | Prints variadic unsigned integer in a decimal representation                         | print_uint  (different name because of a bug in Betty )  |
 | utils.c             | Holds utility functions                                                              | change_integer_base                                      |
 
 NOTE: we decided to try and follow a "one function per file" approach but in practice it made sense to have exceptions when...
