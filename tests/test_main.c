@@ -89,6 +89,10 @@ int main(void)
 	printf("==== START AUTOMATED TESTS ON FORMATTERS ====\n");
 	TEST_1_ARGS("Strings",  "%s",       "Hello World");
 	TEST_1_ARGS("NULL String",  "%s",       str_null);
+	TEST_0_ARGS("Double % as literal'",  "%%");
+	TEST_0_ARGS("Final % as literal'",  "Beware the last %");
+	TEST_1_ARGS("Double % as string",  "%s",       "%% should end as %");
+	TEST_1_ARGS("Final % as string",  "%s",       "Beware the last %");
 	TEST_2_ARGS("Integers", "%d, %i",        -1024, 2024);
 	TEST_2_ARGS("INT_MIN & INT_MAX", "%d, %d", INT_MIN, INT_MAX);
 	TEST_1_ARGS("Double percent",  "%%",       "Hello World");
